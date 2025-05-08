@@ -68,7 +68,7 @@ const Navbar = () => {
                         }
                         onClick={() => setIsOpen(false)}
                     >
-                        <FiLayout /> Board
+                        <FiLayout /> Board 
                     </NavLink>
                     <NavLink
                         to="/add-card"
