@@ -1,9 +1,10 @@
-// server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/mongodb.js";
 import cardRouter from './routes/cardRoutes.js'; // Import the router
+import { login, createUser } from './controllers/userController.js';
+import { authMiddleware, restrictTo } from './middleware/authMiddleware.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
@@ -26,6 +27,8 @@ connectDB();
 
 // Routes
 app.use('/api/cards', cardRouter); // Changed from '/api/card' to '/api/cards' (plural is more RESTful)
+app.post('/api/login', login);
+app.post('/api/users', authMiddleware, restrictTo('admin'), createUser);
 
 app.get("/", (req, res) => {
   res.send("API working");
