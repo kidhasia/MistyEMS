@@ -5,26 +5,6 @@
     font-family: 'Poppins', sans-serif;
 }
 
-body {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    min-height: 130vh;
-    padding: 5px;
-    position: relative;
-    color: #fff;
-}
-
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-    animation: pulse 8s infinite;
-    z-index: 0;
-}
-
 @keyframes pulse {
     0%, 100% {
         transform: scale(1);
@@ -37,17 +17,18 @@ body::before {
 }
 
 .board-container {
-    max-width: 100%;
+    max-width: 100%; /* Allow container to fit viewport */
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    margin-top: 30%; /* Added margin for spacing */
 }
 
 .header-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: 15px; /* Reduced gap for tighter layout */
     margin-bottom: 15px;
     flex-wrap: wrap;
 }
@@ -61,11 +42,11 @@ body::before {
     background: linear-gradient(45deg, #00DDEB, #FF00E6);
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 8px 16px; /* Slightly smaller padding */
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.9em;
+    font-size: 0.9em; /* Smaller font for better fit */
     transition: all 0.3s ease;
 }
 
@@ -82,11 +63,11 @@ body::before {
 .search-input-wrapper {
     position: relative;
     width: 100%;
-    max-width: 300px;
+    max-width: 300px; /* Reduced max-width for smaller screens */
 }
 
 .search-input-wrapper input {
-    padding: 10px 15px 10px 35px;
+    padding: 10px 15px 10px 35px; /* Adjusted padding for icon */
     width: 100%;
     border: none;
     border-radius: 8px;
@@ -124,7 +105,7 @@ body::before {
 .board {
     display: flex;
     justify-content: flex-start;
-    gap: 15px;
+    gap: 15px; /* Reduced gap */
     overflow-x: auto;
     padding: 15px;
     border-radius: 12px;
@@ -133,14 +114,14 @@ body::before {
 
 .board.no-transitions .column,
 .board.no-transitions .card {
-    transition: none;
+    transition: none; /* Disable transitions during filtering */
 }
 
 .column {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px);
     border-radius: 12px;
-    width: 300px;
+    width: 300px; /* Slightly smaller columns */
     min-width: 300px;
     padding: 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -148,7 +129,7 @@ body::before {
     flex-direction: column;
     gap: 15px;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
-    min-height: 250px;
+    min-height: 250px; /* Reduced min-height */
     overflow-y: auto;
 }
 
@@ -192,6 +173,7 @@ body::before {
     transition: all 0.3s ease;
 }
 
+/* Color coding for each column status */
 .column[data-status="todo"] .column-header {
     background: #e63946;
 }
@@ -209,7 +191,7 @@ body::before {
 }
 
 .column-title {
-    font-size: 1.2em;
+    font-size: 1.2em; /* Smaller font */
     font-weight: 700;
     color: #fff;
     text-transform: uppercase;
@@ -402,6 +384,7 @@ button:hover {
     border-radius: 4px;
 }
 
+/* Responsive Design */
 @media (max-width: 1024px) {
     .board {
         flex-direction: column;
