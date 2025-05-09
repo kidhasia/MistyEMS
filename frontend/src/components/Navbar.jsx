@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FiMenu, FiX, FiLayout, FiPlusCircle, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiLayout, FiPlusCircle, FiBarChart2, FiLogOut } from 'react-icons/fi';
 import LOGOmisty from '../assets/LOGOmisty.png';
 
 const NavbarLink = ({ to, icon: Icon, label, isOpen, onClick }) => (
@@ -25,6 +25,13 @@ const NavbarLink = ({ to, icon: Icon, label, isOpen, onClick }) => (
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Define routes that should show "Dashboard" and "Reports"
+    const dashboardRoutes = ['/dashboard', '/reports', '/tasks/'];
+    const isDashboardRoute = dashboardRoutes.some((route) =>
+        route.includes('/tasks/') ? location.pathname.startsWith('/tasks/') : location.pathname === route
+    );
 
     const handleLogout = () => {
         toast(({ closeToast }) => (
@@ -35,7 +42,7 @@ const Navbar = () => {
                         className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
                         onClick={() => {
                             localStorage.removeItem('authToken');
-                            navigate('/login');
+                            navigate('/client/login');
                             closeToast();
                         }}
                     >
@@ -83,20 +90,41 @@ const Navbar = () => {
 
                     {/* Navigation */}
                     <div className="flex flex-col gap-2 flex-1">
-                        <NavbarLink
-                            to="/"
-                            icon={FiLayout}
-                            label="Board"
-                            isOpen={isOpen}
-                            onClick={() => setIsOpen(false)}
-                        />
-                        <NavbarLink
-                            to="/add-card"
-                            icon={FiPlusCircle}
-                            label="Add Card"
-                            isOpen={isOpen}
-                            onClick={() => setIsOpen(false)}
-                        />
+                        {isDashboardRoute ? (
+                            <>
+                                <NavbarLink
+                                    to="/dashboard"
+                                    icon={FiLayout}
+                                    label="Dashboard"
+                                    isOpen={isOpen}
+                                    onClick={() => setIsOpen(false)}
+                                />
+                                <NavbarLink
+                                    to="/reports"
+                                    icon={FiBarChart2}
+                                    label="Reports"
+                                    isOpen={isOpen}
+                                    onClick={() => setIsOpen(false)}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <NavbarLink
+                                    to="/"
+                                    icon={FiLayout}
+                                    label="Board"
+                                    isOpen={isOpen}
+                                    onClick={() => setIsOpen(false)}
+                                />
+                                <NavbarLink
+                                    to="/add-card"
+                                    icon={FiPlusCircle}
+                                    label="Add Card"
+                                    isOpen={isOpen}
+                                    onClick={() => setIsOpen(false)}
+                                />
+                            </>
+                        )}
                     </div>
 
                     {/* Logout */}

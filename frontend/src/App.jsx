@@ -16,62 +16,71 @@ import ResetPassword from './pages/client/ResetPassword.jsx';
 import EmployeeLogin from './pages/employee/Login.jsx';
 import EmployeeDashboard from './pages/employee/Dashboard.jsx';
 import AssignTask from './pages/employee/AssignTask.jsx';
+import DashboardPage from './pages/DashboardPage.jsx';
+import TaskPage from './pages/TaskPage.jsx';
+import ReportsPage from './pages/ReportsPage.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
+import './App.css';
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const App = () => {
-  const location = useLocation();
-  // Define routes where Navbar should NOT be shown
-  const noNavbarRoutes = [
-    '/login',
-    '/client/login',
-    '/client/register',
-    '/employee/login',
-    '/client/forgot-password',
-    '/client/verify-code',
-    '/client/reset-password',
-  ];
-  const showNavbar = !noNavbarRoutes.includes(location.pathname);
+    const location = useLocation();
 
-  return (
-    <div className="flex">
-      {showNavbar && <Navbar />}
-      <Routes>
-        {/* Existing routes */}
-        <Route path="/" element={<Board />} />
-        <Route path="/add-card" element={<AddCard />} />
-        <Route path="/edit-card" element={<EditCard />} />
+    // Define routes where Navbar should NOT be shown
+    const noNavbarRoutes = [
+        '/client/login',
+        '/client/register',
+        '/employee/login',
+        '/client/forgot-password',
+        '/client/verify-code',
+        '/client/reset-password',
+    ];
 
-        {/* Client routes */}
-        <Route path="/client/login" element={<ClientLogin />} />
-        <Route path="/client/register" element={<ClientRegister />} />
-        <Route path="/client/dashboard" element={<ClientDashboard />} />
-        <Route path="/client/request" element={<ClientTask />} />
-        <Route path="/client/forgot-password" element={<ForgotPassword />} />
-        <Route path="/client/verify-code" element={<VerifyCode />} />
-        <Route path="/client/reset-password" element={<ResetPassword />} />
+    // Show Navbar for all routes except noNavbarRoutes
+    const showNavbar = !noNavbarRoutes.includes(location.pathname);
 
-        {/* Employee routes */}
-        <Route path="/employee/login" element={<EmployeeLogin />} />
-        <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
-        <Route path="/employee/assign-task" element={<AssignTask />} />
-
-        {/* Catch-all redirect */}
-        <Route path="*" element={<Navigate to="/client/login" />} />
-      </Routes>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-    </div>
-  );
+    return (
+        <ErrorBoundary>
+            <div className="flex">
+                {showNavbar && <Navbar />}
+                <div className={`content-container ${showNavbar ? 'with-navbar' : ''}`}>
+                    <main className="main-content">
+                        <Routes>
+                            <Route path="/" element={<Board />} />
+                            <Route path="/add-card" element={<AddCard />} />
+                            <Route path="/edit-card" element={<EditCard />} />
+                            <Route path="/client/login" element={<ClientLogin />} />
+                            <Route path="/client/register" element={<ClientRegister />} />
+                            <Route path="/client/dashboard" element={<ClientDashboard />} />
+                            <Route path="/client/request" element={<ClientTask />} />
+                            <Route path="/client/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/client/verify-code" element={<VerifyCode />} />
+                            <Route path="/client/reset-password" element={<ResetPassword />} />
+                            <Route path="/employee/login" element={<EmployeeLogin />} />
+                            <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+                            <Route path="/employee/assign-task" element={<AssignTask />} />
+                            <Route path="/dashboard" element={<DashboardPage />} />
+                            <Route path="/tasks/:id" element={<TaskPage />} />
+                            <Route path="/reports" element={<ReportsPage />} />
+                            <Route path="*" element={<Navigate to="/client/login" />} />
+                        </Routes>
+                    </main>
+                </div>
+                <ToastContainer
+                    position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+            </div>
+        </ErrorBoundary>
+    );
 };
 
 export default App;
