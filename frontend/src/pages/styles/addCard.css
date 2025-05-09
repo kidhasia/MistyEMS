@@ -8,12 +8,14 @@
 
 body {
     background: linear-gradient(45deg, #E100FF, #FD74B8, #FF66B2);
-    height: 100vh; /* Fixed height to viewport */
-    width: 100vw; /* Fixed width to viewport */
-    overflow: hidden; /* No scrolling in any direction */
+    min-height: 100vh; /* Allow body to expand with content */
+    width: 100vw;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Align to top to allow scrolling */
+    padding: 20px; /* Add padding for breathing room */
+    position: relative;
+    color: #fff;
 }
 
 body::before {
@@ -42,12 +44,12 @@ body::before {
     padding: 1.5rem;
     width: 100%;
     max-width: 450px; /* Compact width */
-    max-height: 100vh; /* Ensure it fits within viewport height */
+    max-height: calc(100vh - 40px); /* Fit within viewport, account for body padding */
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 1;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden; /* No scrolling within container */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .form-container:hover {
@@ -178,6 +180,21 @@ textarea::placeholder {
     font-style: italic;
 }
 
+/* Scrollbar Styling */
+.form-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.form-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.form-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #E100FF, #FD74B8);
+    border-radius: 4px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .form-row {
@@ -192,12 +209,18 @@ textarea::placeholder {
     .short-input input {
         max-width: 100%;
     }
+
+    .form-container {
+        max-height: calc(100vh - 60px); /* Adjust for increased body padding */
+        padding: 1.2rem;
+    }
 }
 
 @media (max-width: 480px) {
     .form-container {
         padding: 1rem;
         max-width: 90%;
+        max-height: calc(100vh - 80px); /* Tighter fit for small screens */
     }
 
     .form-row {

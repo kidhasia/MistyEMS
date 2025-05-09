@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,8 +9,37 @@ import jsPDF from 'jspdf';
 const Board = () => {
   const navigate = useNavigate();
   const [columns, setColumns] = useState({ todo: [], inprogress: [], done: [] });
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Memoized filtered columns to optimize performance
+  const filteredColumns = useMemo(() => {
+    if (searchQuery.trim() === '') {
+      return columns;
+    }
+    const query = searchQuery.toLowerCase();
+    return {
+      todo: columns.todo.filter(
+        (card) =>
+          card.content?.toLowerCase().includes(query) ||
+          card.description?.toLowerCase().includes(query) ||
+          card.tags?.some((tag) => tag.toLowerCase().includes(query))
+      ),
+      inprogress: columns.inprogress.filter(
+        (card) =>
+          card.content?.toLowerCase().includes(query) ||
+          card.description?.toLowerCase().includes(query) ||
+          card.tags?.some((tag) => tag.toLowerCase().includes(query))
+      ),
+      done: columns.done.filter(
+        (card) =>
+          card.content?.toLowerCase().includes(query) ||
+          card.description?.toLowerCase().includes(query) ||
+          card.tags?.some((tag) => tag.toLowerCase().includes(query))
+      ),
+    };
+  }, [searchQuery, columns]);
 
   useEffect(() => {
     fetchCards();
@@ -131,15 +160,13 @@ const Board = () => {
       format: 'a4',
     });
 
-    // Constants
     const margin = 15;
-    const pageWidth = 210; // A4 width
-    const pageHeight = 297; // A4 height
+    const pageWidth = 210;
+    const pageHeight = 297;
     const maxWidth = pageWidth - 2 * margin;
-    const lineHeight = 8; // Increased for larger font
+    const lineHeight = 8;
     let yOffset = margin;
 
-    // Helper function for page breaks
     const checkPageBreak = (requiredHeight) => {
       if (yOffset + requiredHeight > pageHeight - 20) {
         doc.addPage();
@@ -147,14 +174,13 @@ const Board = () => {
       }
     };
 
-    // Footer function
     const addFooter = () => {
       const pageCount = doc.internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(14); // Larger font size
-        doc.setTextColor(0); // Black
+        doc.setFontSize(14);
+        doc.setTextColor(0);
         doc.text(
           `Generated on ${new Date().toLocaleString()} | Page ${i} of ${pageCount}`,
           margin,
@@ -163,35 +189,30 @@ const Board = () => {
       }
     };
 
-    // Main content
-    Object.entries(columns).forEach(([status, cards]) => {
+    Object.entries(filteredColumns).forEach(([status, cards]) => {
       const columnTitle =
         status === 'todo' ? 'To Do' :
           status === 'inprogress' ? 'In Progress' : 'Done';
 
-      // Column color scheme (used only for non-text elements)
       const columnColor =
-        status === 'todo' ? [255, 105, 180] : // Hot Pink
-          status === 'inprogress' ? [186, 85, 211] : [147, 112, 219]; // Orchid, Medium Purple
+        status === 'todo' ? [255, 105, 180] :
+          status === 'inprogress' ? [186, 85, 211] : [147, 112, 219];
 
-      // Section Title
       checkPageBreak(20);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14); // Larger font size
-      doc.setTextColor(0); // Black
+      doc.setFontSize(14);
+      doc.setTextColor(0);
       doc.text(`${columnTitle} (${cards.length})`, margin, yOffset);
       yOffset += lineHeight + 2;
 
-      // Separator line
       doc.setDrawColor(columnColor[0], columnColor[1], columnColor[2]);
       doc.setLineWidth(0.5);
       doc.line(margin, yOffset, margin + 50, yOffset);
       yOffset += 5;
 
-      // Cards
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(14); // Larger font size
-      doc.setTextColor(0); // Black
+      doc.setFontSize(14);
+      doc.setTextColor(0);
 
       cards.forEach((card, index) => {
         const lines = [
@@ -206,35 +227,28 @@ const Board = () => {
           `Created: ${card.createdAt ? new Date(card.createdAt).toLocaleString() : 'N/A'}`
         ];
 
-        // Wrap text for long lines
         const wrappedLines = lines.flatMap((line) =>
           doc.splitTextToSize(line, maxWidth - 10)
         );
         const textBlockHeight = wrappedLines.length * lineHeight + 15;
 
-        // Check page break
         checkPageBreak(textBlockHeight + 10);
 
-        // Card background (rounded rectangle with shadow)
-        doc.setFillColor(255, 240, 245); // Lavender Blush
+        doc.setFillColor(255, 240, 245);
         doc.setDrawColor(200);
         doc.roundedRect(margin, yOffset, maxWidth, textBlockHeight, 3, 3, 'FD');
 
-        // Shadow effect (simulated with offset rectangle)
         doc.setFillColor(220, 220, 220);
         doc.roundedRect(margin + 1, yOffset + 1, maxWidth, textBlockHeight, 3, 3, 'F');
 
-        // Redraw card over shadow
-        doc.setFillColor(255, 255, 255); // White
+        doc.setFillColor(255, 255, 255);
         doc.setDrawColor(200);
         doc.roundedRect(margin, yOffset, maxWidth, textBlockHeight, 3, 3, 'FD');
 
-        // Card content
         wrappedLines.forEach((line, i) => {
           doc.text(line, margin + 5, yOffset + 10 + i * lineHeight);
         });
 
-        // Tag badges (simulated with colored rectangles)
         if (card.tags && card.tags.length > 0) {
           let tagX = margin + 5;
           card.tags.forEach((tag) => {
@@ -242,8 +256,8 @@ const Board = () => {
             if (tagX + tagWidth < pageWidth - margin) {
               doc.setFillColor(columnColor[0], columnColor[1], columnColor[2]);
               doc.roundedRect(tagX, yOffset + textBlockHeight - 8, tagWidth, 6, 2, 2, 'F');
-              doc.setTextColor(0); // Black
-              doc.setFontSize(14); // Larger font size
+              doc.setTextColor(0);
+              doc.setFontSize(14);
               doc.text(tag, tagX + 3, yOffset + textBlockHeight - 4);
               tagX += tagWidth + 5;
             }
@@ -256,98 +270,111 @@ const Board = () => {
       yOffset += 10;
     });
 
-    // Add footer to all pages
     addFooter();
-
-    // Save PDF
     doc.save('kanban-board.pdf');
   };
-
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
-    <div className="board">
-      <div className="pdf-button-container">
-        <button
-          className="generate-pdf-btn"
-          onClick={generatePDF}
-          style={{
-            background: 'linear-gradient(45deg, #00DDEB, #FF00E6)',
-            color: 'white',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '10px',
-            cursor: 'pointer',
-            fontWeight: '600',
-            transition: 'all 0.3s ease',
-          }}
-        >
-          Generate PDF
-        </button>
-      </div>
-      {Object.entries(columns).map(([status, cards]) => (
-        <div className="column" key={status} data-status={status}>
-          <div className="column-header">
-            <span className="column-title">
-              {status === 'todo'
-                ? 'To Do'
-                : status === 'inprogress'
-                  ? 'In Progress'
-                  : 'Done'}
-            </span>
-            <span className="card-count">{cards.length}</span>
-          </div>
-
-          {cards.map((card) => (
-            <div className="card" key={card._id}>
-              <div className="card-content">{card.content}</div>
-              <div className="card-details">
-                <p className="description">{card.description}</p>
-                <p className="due-date">
-                  Due: {new Date(card.dueDate).toLocaleDateString()}
-                </p>
-                <p className="priority">Priority: {card.priority}</p>
-              </div>
-              <div className="tags">
-                {card.tags.map((tag) => (
-                  <span className="tag" key={tag}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className="card-actions">
-                <select
-                  className="status-select"
-                  value={status}
-                  onChange={(e) => handleStatusChange(card, e.target.value)}
-                >
-                  <option value="todo">To Do</option>
-                  <option value="inprogress">In Progress</option>
-                  <option value="done">Done</option>
-                </select>
-                <button
-                  className="edit-btn"
-                  onClick={() => handleEditCard(card)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(status, card._id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-
-          <button className="add-card" onClick={() => handleAddCard(status)}>
-            + Add Card
+    <div className="board-container">
+      <div className="header-container">
+        <div className="pdf-button-container">
+          <button
+            className="generate-pdf-btn"
+            onClick={generatePDF}
+          >
+            Generate PDF
           </button>
         </div>
-      ))}
+        <div className="search-container">
+          <div className="search-input-wrapper">
+            <svg
+              className="search-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search cards by content, description, or tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+      <div className={`board ${searchQuery ? 'no-transitions' : ''}`}>
+        {Object.entries(filteredColumns).map(([status, cards]) => (
+          <div className="column" key={status} data-status={status}>
+            <div className="column-header">
+              <span className="column-title">
+                {status === 'todo'
+                  ? 'To Do'
+                  : status === 'inprogress'
+                    ? 'In Progress'
+                    : 'Done'}
+              </span>
+              <span className="card-count">{cards.length}</span>
+            </div>
+
+            {cards.map((card) => (
+              <div className="card" key={card._id}>
+                <div className="card-content">{card.content}</div>
+                <div className="card-details">
+                  <p className="description">{card.description}</p>
+                  <p className="due-date">
+                    Due: {new Date(card.dueDate).toLocaleDateString()}
+                  </p>
+                  <p className="priority">Priority: {card.priority}</p>
+                </div>
+                <div className="tags">
+                  {card.tags.map((tag) => (
+                    <span className="tag" key={tag}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="card-actions">
+                  <select
+                    className="status-select"
+                    value={status}
+                    onChange={(e) => handleStatusChange(card, e.target.value)}
+                  >
+                    <option value="todo">To Do</option>
+                    <option value="inprogress">In Progress</option>
+                    <option value="done">Done</option>
+                  </select>
+                  <button
+                    className="edit-btn"
+                    onClick={() => handleEditCard(card)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(status, card._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            <button className="add-card" onClick={() => handleAddCard(status)}>
+              + Add Card
+            </button>
+          </div>
+        ))}
+      </div>
       <ToastContainer />
     </div>
   );

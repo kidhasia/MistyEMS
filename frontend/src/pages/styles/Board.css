@@ -1,4 +1,3 @@
-/* css/styles.css */
 * {
     margin: 0;
     padding: 0;
@@ -8,9 +7,8 @@
 
 body {
     background: linear-gradient(135deg, #6a11cb, #2575fc);
-    min-height: 100vh;
-    padding: 30px;
-    overflow: hidden;
+    min-height: 130vh;
+    padding: 5px;
     position: relative;
     color: #fff;
 }
@@ -28,52 +26,142 @@ body::before {
 }
 
 @keyframes pulse {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: scale(1);
         opacity: 0.15;
     }
-
     50% {
         transform: scale(1.1);
         opacity: 0.3;
     }
 }
 
-.board {
-    max-width: 1400px;
+.board-container {
+    max-width: 100%;
     margin: 0 auto;
-    display: flex;
-    gap: 25px;
-    overflow-x: auto;
-    padding: 20px;
     position: relative;
     z-index: 1;
-    border-radius: 16px;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.pdf-button-container {
+    display: flex;
+    align-items: center;
+}
+
+.generate-pdf-btn {
+    background: linear-gradient(45deg, #00DDEB, #FF00E6);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.generate-pdf-btn:hover {
+    background: linear-gradient(45deg, #00b7c2, #cc00b8);
+    transform: scale(1.05);
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+}
+
+.search-input-wrapper input {
+    padding: 10px 15px 10px 35px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #2c3e50;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.search-input-wrapper input::placeholder {
+    color: #7f8c8d;
+    opacity: 0.8;
+}
+
+.search-input-wrapper input:focus {
+    outline: none;
+    background: #fff;
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid #2575fc;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #7f8c8d;
+}
+
+.board {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 15px;
+    border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.board.no-transitions .column,
+.board.no-transitions .card {
+    transition: none;
 }
 
 .column {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px);
-    border-radius: 16px;
-    width: 340px;
-    min-width: 340px;
-    padding: 20px;
+    border-radius: 12px;
+    width: 300px;
+    min-width: 300px;
+    padding: 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
-    max-height: calc(100vh - 100px);
-    overflow-y: hidden;
+    min-height: 250px;
+    overflow-y: auto;
+}
+
+.column:empty {
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .column:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
-    overflow-y: auto;
 }
 
 .column::-webkit-scrollbar {
@@ -94,30 +182,26 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 8px 12px;
     position: sticky;
     top: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px 12px 0 0;
+    border-radius: 10px 10px 0 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 1;
     transition: all 0.3s ease;
 }
 
-/* Color coding for each column status */
 .column[data-status="todo"] .column-header {
     background: #e63946;
-    /* Red for To Do */
 }
 
 .column[data-status="inprogress"] .column-header {
     background: #f4c430;
-    /* Yellow for In Progress */
 }
 
 .column[data-status="done"] .column-header {
     background: #2ecc71;
-    /* Green for Done */
 }
 
 .column:hover .column-header {
@@ -125,11 +209,11 @@ body::before {
 }
 
 .column-title {
-    font-size: 1.4em;
+    font-size: 1.2em;
     font-weight: 700;
     color: #fff;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 1px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -137,23 +221,20 @@ body::before {
     background: linear-gradient(45deg, #6a11cb, #2575fc);
     color: white;
     border-radius: 50%;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9em;
+    font-size: 0.8em;
     animation: bounce 2s infinite;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 @keyframes bounce {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translateY(0);
     }
-
     50% {
         transform: translateY(-6px);
     }
@@ -161,8 +242,8 @@ body::before {
 
 .card {
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
-    padding: 15px;
+    border-radius: 10px;
+    padding: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     transition: all 0.4s ease;
     position: relative;
@@ -174,21 +255,21 @@ body::before {
 }
 
 .card-content {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     padding: 5px;
     font-weight: 600;
-    font-size: 1.1em;
+    font-size: 1em;
     color: #2c3e50;
 }
 
 .card-details {
-    margin-bottom: 10px;
-    font-size: 0.9em;
+    margin-bottom: 8px;
+    font-size: 0.85em;
     color: #2c3e50;
 }
 
 .card-details p {
-    margin: 5px 0;
+    margin: 4px 0;
     color: #000;
 }
 
@@ -208,15 +289,15 @@ body::before {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin: 10px 0;
+    margin: 8px 0;
 }
 
 .tag {
     background: #6a11cb;
     color: white;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.75em;
     transition: all 0.3s ease;
 }
 
@@ -226,15 +307,15 @@ body::before {
 
 .card-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
 select {
-    padding: 6px 10px;
+    padding: 5px 8px;
     border: none;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.85em;
     transition: all 0.3s ease;
     background: #0488a9;
     color: #2c3e50;
@@ -245,16 +326,16 @@ button {
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.85em;
     transition: all 0.3s ease;
 }
 
 .edit-btn {
     background: linear-gradient(45deg, #f1c40f, #f39c12);
     color: white;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 1em;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 0.9em;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -270,9 +351,9 @@ button {
 .delete-btn {
     background: linear-gradient(45deg, #e74c3c, #c0392b);
     color: white;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 1em;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 0.9em;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -288,28 +369,13 @@ button {
 button:hover {
     transform: translateY(-3px);
 }
-.generate-pdf-btn {
-  background: linear-gradient(45deg, #00DDEB, #FF00E6);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  margin-bottom: 20px;
-}
 
-.generate-pdf-btn:hover {
-  background: linear-gradient(45deg, #00b7c2, #cc00b8);
-  transform: scale(1.05);
-}
 .add-card {
     background: linear-gradient(45deg, #6a11cb, #2575fc);
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 12px;
+    padding: 10px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
     text-transform: uppercase;
@@ -323,15 +389,81 @@ button:hover {
 }
 
 .board::-webkit-scrollbar {
-    height: 10px;
+    height: 8px;
 }
 
 .board::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    border-radius: 4px;
 }
 
 .board::-webkit-scrollbar-thumb {
     background: linear-gradient(90deg, #6a11cb, #2575fc);
-    border-radius: 5px;
+    border-radius: 4px;
+}
+
+@media (max-width: 1024px) {
+    .board {
+        flex-direction: column;
+        align-items: center;
+        overflow-x: visible;
+    }
+
+    .column {
+        width: 100%;
+        max-width: 340px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-input-wrapper {
+        max-width: 100%;
+    }
+
+    .generate-pdf-btn {
+        padding: 8px 14px;
+        font-size: 0.85em;
+    }
+
+    .board-container {
+        padding: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-input-wrapper input {
+        padding: 8px 12px 8px 30px;
+        font-size: 0.85em;
+    }
+
+    .search-icon {
+        width: 16px;
+        height: 16px;
+        left: 8px;
+    }
+
+    .column {
+        min-width: 100%;
+        padding: 10px;
+    }
+
+    .column-title {
+        font-size: 1em;
+    }
+
+    .card-count {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7em;
+    }
 }
