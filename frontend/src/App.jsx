@@ -19,6 +19,7 @@ import AssignTask from './pages/employee/AssignTask.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import TaskPage from './pages/TaskPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
+import OverviewPage from './pages/OverviewPage.jsx'; // Import OverviewPage
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import './App.css';
 
@@ -60,7 +61,8 @@ const App = () => {
                             <Route path="/employee/login" element={<EmployeeLogin />} />
                             <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
                             <Route path="/employee/assign-task" element={<AssignTask />} />
-                            <Route path="/dashboard" element={<DashboardPage />} />
+                            <Route path="/overview" element={<OverviewPage />} /> {/* Replace DashboardPage with OverviewPage */}
+                            <Route path="/dashboard" element={<DashboardPage />} /> {/* Replace DashboardPage with OverviewPage */}
                             <Route path="/tasks/:id" element={<TaskPage />} />
                             <Route path="/reports" element={<ReportsPage />} />
                             <Route path="*" element={<Navigate to="/client/login" />} />

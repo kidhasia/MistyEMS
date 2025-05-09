@@ -13,9 +13,8 @@ const NavbarLink = ({ to, icon: Icon, label, isOpen, onClick }) => (
     >
         <Icon className="text-2xl shrink-0" />
         <span
-            className={`ml-4 transition-all duration-200 ${
-                isOpen ? 'inline' : 'hidden md:group-hover:inline'
-            }`}
+            className={`ml-4 transition-all duration-200 ${isOpen ? 'inline' : 'hidden md:group-hover:inline'
+                }`}
         >
             {label}
         </span>
@@ -28,7 +27,7 @@ const Navbar = () => {
     const location = useLocation();
 
     // Define routes that should show "Dashboard" and "Reports"
-    const dashboardRoutes = ['/dashboard', '/reports', '/tasks/'];
+    const dashboardRoutes = ['/dashboard', '/reports', '/overview', '/tasks/'];
     const isDashboardRoute = dashboardRoutes.some((route) =>
         route.includes('/tasks/') ? location.pathname.startsWith('/tasks/') : location.pathname === route
     );
@@ -78,9 +77,8 @@ const Navbar = () => {
             {/* Sidebar */}
             <nav
                 role="navigation"
-                className={`group fixed top-0 left-0 h-full bg-gradient-to-b from-purple-800 to-purple-600 border-r border-purple-700 z-50 transition-all duration-300 ${
-                    isOpen ? 'w-64' : 'w-16'
-                } md:hover:w-64 md:w-16`}
+                className={`group fixed top-0 left-0 h-full bg-gradient-to-b from-purple-800 to-purple-600 border-r border-purple-700 z-50 transition-all duration-300 ${isOpen ? 'w-64' : 'w-16'
+                    } md:hover:w-64 md:w-16`}
             >
                 <div className="flex flex-col h-full p-4 md:p-2 gap-8">
                     {/* Logo */}
@@ -103,6 +101,13 @@ const Navbar = () => {
                                     to="/reports"
                                     icon={FiBarChart2}
                                     label="Reports"
+                                    isOpen={isOpen}
+                                    onClick={() => setIsOpen(false)}
+                                />
+                                <NavbarLink
+                                    to="/overview"
+                                    icon={FiBarChart2}
+                                    label="Overview"
                                     isOpen={isOpen}
                                     onClick={() => setIsOpen(false)}
                                 />
@@ -135,9 +140,8 @@ const Navbar = () => {
                     >
                         <FiLogOut className="text-2xl shrink-0" />
                         <span
-                            className={`ml-4 transition-all duration-200 ${
-                                isOpen ? 'inline' : 'hidden md:group-hover:inline'
-                            }`}
+                            className={`ml-4 transition-all duration-200 ${isOpen ? 'inline' : 'hidden md:group-hover:inline'
+                                }`}
                         >
                             Logout
                         </span>
