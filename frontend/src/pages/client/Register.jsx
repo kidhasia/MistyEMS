@@ -63,20 +63,20 @@ const ClientRegister = () => {
 
   return (
     <div className="flex min-h-screen w-screen items-center justify-center bg-gradient-to-br from-purple-600 to-pink-400">
-      <div className="w-full max-w-3xl rounded-3xl border border-white/30 bg-white/95 p-8 shadow-2xl backdrop-blur-lg transition duration-500 hover:scale-[1.03]">
-        <header className="mb-5 text-center select-none">
-          <h1 className="text-2xl font-extrabold text-gray-900">
+      <div className="w-full max-w-md rounded-2xl border border-white/30 bg-white/95 p-6 shadow-lg backdrop-blur-md transition duration-500 hover:scale-[1.02]">
+        <header className="mb-4 text-center select-none">
+          <h1 className="text-xl font-extrabold text-gray-900">
             Misty <span className="block text-xs tracking-widest">PRODUCTION</span>
           </h1>
         </header>
 
-        <h2 className="mb-4 text-center text-4xl font-extrabold text-gray-90 select-none">Sign Up</h2>
-        <p className="mb-8 text-center text-sm text-gray-500 select-none">Create your account</p>
+        <h2 className="mb-3 text-center text-3xl font-extrabold text-gray-900 select-none">Sign Up</h2>
+        <p className="mb-6 text-center text-xs text-gray-500 select-none">Create your account</p>
 
-        <form onSubmit={handleRegister} className="space-y-5">
+        <form onSubmit={handleRegister} className="space-y-4">
           {inputs.map(({ id, type, label, placeholder }) => (
             <div key={id}>
-              <label htmlFor={id} className="mb-1 block text-sm font-medium text-gray-700">
+              <label htmlFor={id} className="mb-1 block text-xs font-medium text-gray-700">
                 {label}
               </label>
               <input
@@ -87,20 +87,20 @@ const ClientRegister = () => {
                 onChange={handleChange}
                 placeholder={placeholder}
                 required
-                className="w-full rounded-lg border border-gray-300 bg-gray-100 p-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-md border border-gray-300 bg-gray-100 p-2 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
           ))}
           <button
             type="submit"
             disabled={isLoading}
-            className={`flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-purple-800 p-3 text-sm text-white transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-purple-400 ${
+            className={`flex w-full items-center justify-center rounded-md bg-gradient-to-r from-purple-600 to-purple-800 p-2 text-xs text-white transition duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-purple-400 ${
               isLoading ? 'opacity-75 cursor-not-allowed' : ''
             }`}
           >
             {isLoading && (
               <svg
-                className="mr-2 h-4 w-4 animate-spin text-white"
+                className="mr-1 h-3 w-3 animate-spin text-white"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -124,7 +124,7 @@ const ClientRegister = () => {
           </button>
         </form>
 
-        <p className="mt-5 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-xs text-gray-600">
           Already have an account?{' '}
           <span
             className="cursor-pointer font-semibold text-purple-600 hover:underline"

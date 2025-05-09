@@ -1,10 +1,10 @@
-// src/pages/Board.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Ensure styles are imported
+import 'react-toastify/dist/ReactToastify.css';
 import './styles/Board.css';
 import { backendUrl } from '../App';
+import jsPDF from 'jspdf';
 
 const Board = () => {
   const navigate = useNavigate();
@@ -124,11 +124,169 @@ const Board = () => {
     navigate('/edit-card', { state: { card } });
   };
 
+  const generatePDF = () => {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    // Constants
+    const margin = 15;
+    const pageWidth = 210; // A4 width
+    const pageHeight = 297; // A4 height
+    const maxWidth = pageWidth - 2 * margin;
+    const lineHeight = 8; // Increased for larger font
+    let yOffset = margin;
+
+    // Helper function for page breaks
+    const checkPageBreak = (requiredHeight) => {
+      if (yOffset + requiredHeight > pageHeight - 20) {
+        doc.addPage();
+        yOffset = margin;
+      }
+    };
+
+    // Footer function
+    const addFooter = () => {
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(14); // Larger font size
+        doc.setTextColor(0); // Black
+        doc.text(
+          `Generated on ${new Date().toLocaleString()} | Page ${i} of ${pageCount}`,
+          margin,
+          pageHeight - 10
+        );
+      }
+    };
+
+    // Main content
+    Object.entries(columns).forEach(([status, cards]) => {
+      const columnTitle =
+        status === 'todo' ? 'To Do' :
+          status === 'inprogress' ? 'In Progress' : 'Done';
+
+      // Column color scheme (used only for non-text elements)
+      const columnColor =
+        status === 'todo' ? [255, 105, 180] : // Hot Pink
+          status === 'inprogress' ? [186, 85, 211] : [147, 112, 219]; // Orchid, Medium Purple
+
+      // Section Title
+      checkPageBreak(20);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14); // Larger font size
+      doc.setTextColor(0); // Black
+      doc.text(`${columnTitle} (${cards.length})`, margin, yOffset);
+      yOffset += lineHeight + 2;
+
+      // Separator line
+      doc.setDrawColor(columnColor[0], columnColor[1], columnColor[2]);
+      doc.setLineWidth(0.5);
+      doc.line(margin, yOffset, margin + 50, yOffset);
+      yOffset += 5;
+
+      // Cards
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(14); // Larger font size
+      doc.setTextColor(0); // Black
+
+      cards.forEach((card, index) => {
+        const lines = [
+          `Card ${index + 1}: ${card.content || 'No Content'}`,
+          `Description: ${card.description || 'N/A'}`,
+          `Due: ${card.dueDate ? new Date(card.dueDate).toLocaleDateString() : 'N/A'}`,
+          `Priority: ${card.priority || 'N/A'}`,
+          `Tags: ${card.tags && card.tags.length > 0 ? card.tags.join(', ') : 'None'}`,
+          `Status: ${card.status === 'todo' ? 'To Do' :
+            card.status === 'inprogress' ? 'In Progress' : 'Done'
+          }`,
+          `Created: ${card.createdAt ? new Date(card.createdAt).toLocaleString() : 'N/A'}`
+        ];
+
+        // Wrap text for long lines
+        const wrappedLines = lines.flatMap((line) =>
+          doc.splitTextToSize(line, maxWidth - 10)
+        );
+        const textBlockHeight = wrappedLines.length * lineHeight + 15;
+
+        // Check page break
+        checkPageBreak(textBlockHeight + 10);
+
+        // Card background (rounded rectangle with shadow)
+        doc.setFillColor(255, 240, 245); // Lavender Blush
+        doc.setDrawColor(200);
+        doc.roundedRect(margin, yOffset, maxWidth, textBlockHeight, 3, 3, 'FD');
+
+        // Shadow effect (simulated with offset rectangle)
+        doc.setFillColor(220, 220, 220);
+        doc.roundedRect(margin + 1, yOffset + 1, maxWidth, textBlockHeight, 3, 3, 'F');
+
+        // Redraw card over shadow
+        doc.setFillColor(255, 255, 255); // White
+        doc.setDrawColor(200);
+        doc.roundedRect(margin, yOffset, maxWidth, textBlockHeight, 3, 3, 'FD');
+
+        // Card content
+        wrappedLines.forEach((line, i) => {
+          doc.text(line, margin + 5, yOffset + 10 + i * lineHeight);
+        });
+
+        // Tag badges (simulated with colored rectangles)
+        if (card.tags && card.tags.length > 0) {
+          let tagX = margin + 5;
+          card.tags.forEach((tag) => {
+            const tagWidth = doc.getTextWidth(tag) + 6;
+            if (tagX + tagWidth < pageWidth - margin) {
+              doc.setFillColor(columnColor[0], columnColor[1], columnColor[2]);
+              doc.roundedRect(tagX, yOffset + textBlockHeight - 8, tagWidth, 6, 2, 2, 'F');
+              doc.setTextColor(0); // Black
+              doc.setFontSize(14); // Larger font size
+              doc.text(tag, tagX + 3, yOffset + textBlockHeight - 4);
+              tagX += tagWidth + 5;
+            }
+          });
+        }
+
+        yOffset += textBlockHeight + 10;
+      });
+
+      yOffset += 10;
+    });
+
+    // Add footer to all pages
+    addFooter();
+
+    // Save PDF
+    doc.save('kanban-board.pdf');
+  };
+
+
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="board">
+      <div className="pdf-button-container">
+        <button
+          className="generate-pdf-btn"
+          onClick={generatePDF}
+          style={{
+            background: 'linear-gradient(45deg, #00DDEB, #FF00E6)',
+            color: 'white',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            transition: 'all 0.3s ease',
+          }}
+        >
+          Generate PDF
+        </button>
+      </div>
       {Object.entries(columns).map(([status, cards]) => (
         <div className="column" key={status} data-status={status}>
           <div className="column-header">
@@ -136,8 +294,8 @@ const Board = () => {
               {status === 'todo'
                 ? 'To Do'
                 : status === 'inprogress'
-                ? 'In Progress'
-                : 'Done'}
+                  ? 'In Progress'
+                  : 'Done'}
             </span>
             <span className="card-count">{cards.length}</span>
           </div>
@@ -190,6 +348,7 @@ const Board = () => {
           </button>
         </div>
       ))}
+      <ToastContainer />
     </div>
   );
 };
