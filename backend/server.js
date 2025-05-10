@@ -12,6 +12,7 @@ import gmtopmRouter from "./routes/gmtopmtasks.js";
 import qcTaskRoutes from "./routes/QCTaskRoutes.js";
 import qcFeedbackRoutes from "./routes/QCFeedbackRoutes.js";
 import qcReportRoutes from "./routes/QCReportRoutes.js";
+import userRoutes from './routes/userRoute.js';
 import mongoose from "mongoose";
 
 // Load environment variables
@@ -65,6 +66,7 @@ connectWithRetry();
 app.use("/api/cards", cardRouter);
 app.use("/client", clientRouter);
 app.use("/task", taskRouter);
+app.use('/api/users', userRoutes);
 app.use("/auth/client", clientAuthRouter);
 app.use("/auth/employee", employeeAuthRouter);
 app.use("/api/gmtopmtask", gmtopmRouter);

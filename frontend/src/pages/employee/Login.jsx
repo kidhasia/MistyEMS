@@ -9,30 +9,48 @@ const EmployeeLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      const res = await API.post('/auth/employee/login', { email, password });
-      const { employee, token } = res.data;
+  try {
+    const res = await API.post('/api/users/login', { email, password });
+    const { user, token } = res.data;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('employeeName', employee.name);
-      localStorage.setItem('employeeId', employee._id);
-      localStorage.setItem('employeeRole', employee.role);
+    // Store user data in localStorage
+    localStorage.setItem('token', token);
+    localStorage.setItem('userEmail', user.email);
+    localStorage.setItem('userId', user.id);
+    localStorage.setItem('userRole', user.role);
 
-      if (employee.role === 'project_manager') {
-        window.open(`http://localhost:3001?pmId=${employee._id}`, '_blank');
-      } else {
+    // Redirect based on role
+    switch (user.role) {
+      case 'project_manager':
+        // Blank as per request (no action)
+        break;
+      case 'editor':
+        navigate('/');
+        break;
+      case 'quality_check':
+        navigate('/dashboard');
+        break;
+      case 'general_manager':
         navigate('/employee/dashboard');
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
-    } finally {
-      setIsLoading(false);
+        break;
+      case 'admin':
+        // Blank as per request (no action)
+        break;
+      default:
+        // Optional: Handle unexpected roles
+        toast.error('Unknown user role');
+        break;
     }
-  };
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Login failed');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="flex min-h-screen w-screen items-center justify-center bg-gradient-to-br from-purple-600 to-pink-400 px-4">
