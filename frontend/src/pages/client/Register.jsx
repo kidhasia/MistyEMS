@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import API from '../../api/axios';
+import LOGOmisty from '../../assets/LOGOmisty.png';
 
 const ClientRegister = () => {
   const navigate = useNavigate();
@@ -65,9 +66,7 @@ const ClientRegister = () => {
     <div className="flex min-h-screen w-screen items-center justify-center bg-gradient-to-br from-purple-600 to-pink-400">
       <div className="w-full max-w-md rounded-2xl border border-white/30 bg-white/95 p-6 shadow-lg backdrop-blur-md transition duration-500 hover:scale-[1.02]">
         <header className="mb-4 text-center select-none">
-          <h1 className="text-xl font-extrabold text-gray-900">
-            Misty <span className="block text-xs tracking-widest">PRODUCTION</span>
-          </h1>
+          <img src={LOGOmisty} alt="Misty Logo" className="mx-auto h-16 w-auto" />
         </header>
 
         <h2 className="mb-3 text-center text-3xl font-extrabold text-gray-900 select-none">Sign Up</h2>

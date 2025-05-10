@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import API from '../../api/axios';
+import LOGOmisty from '../../assets/LOGOmisty.png';
 
 const EmployeeLogin = () => {
   const [email, setEmail] = useState('');
@@ -9,56 +10,54 @@ const EmployeeLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
- const handleLogin = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    const res = await API.post('/api/users/login', { email, password });
-    const { user, token } = res.data;
+    try {
+      const res = await API.post('/api/users/login', { email, password });
+      const { user, token } = res.data;
 
-    // Store user data in localStorage
-    localStorage.setItem('token', token);
-    localStorage.setItem('userEmail', user.email);
-    localStorage.setItem('userId', user.id);
-    localStorage.setItem('userRole', user.role);
+      // Store user data in localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('userEmail', user.email);
+      localStorage.setItem('userId', user.id);
+      localStorage.setItem('userRole', user.role);
 
-    // Redirect based on role
-    switch (user.role) {
-      case 'project_manager':
-        // Blank as per request (no action)
-        break;
-      case 'editor':
-        navigate('/');
-        break;
-      case 'quality_check':
-        navigate('/dashboard');
-        break;
-      case 'general_manager':
-        navigate('/employee/dashboard');
-        break;
-      case 'admin':
-        // Blank as per request (no action)
-        break;
-      default:
-        // Optional: Handle unexpected roles
-        toast.error('Unknown user role');
-        break;
+      // Redirect based on role
+      switch (user.role) {
+        case 'project_manager':
+          // Blank as per request (no action)
+          break;
+        case 'editor':
+          navigate('/');
+          break;
+        case 'quality_check':
+          navigate('/dashboard');
+          break;
+        case 'general_manager':
+          navigate('/employee/dashboard');
+          break;
+        case 'admin':
+          // Blank as per request (no action)
+          break;
+        default:
+          // Optional: Handle unexpected roles
+          toast.error('Unknown user role');
+          break;
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Login failed');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err) {
-    toast.error(err.response?.data?.message || 'Login failed');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <div className="flex min-h-screen w-screen items-center justify-center bg-gradient-to-br from-purple-600 to-pink-400 px-4">
       <div className="w-full max-w-3xl rounded-3xl border border-white/30 bg-white/95 p-8 shadow-2xl backdrop-blur-lg transition duration-500 hover:scale-[1.03]">
         <header className="mb-5 text-center select-none">
-          <h1 className="text-2xl font-extrabold text-gray-900">
-            Misty <span className="block text-xs tracking-widest">PRODUCTION</span>
-          </h1>
+          <img src={LOGOmisty} alt="Misty Logo" className="mx-auto h-16 w-auto" />
         </header>
 
         <h2 className="mb-4 text-center text-4xl font-extrabold text-gray-900 select-none">Employee Login</h2>
