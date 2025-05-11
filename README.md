@@ -1,4 +1,5 @@
-Employee & Project Management System (Trello-Style Clone)
+Employee & Project Management System 
+
 Overview
 This is a full-stack Employee & Project Management System developed as part of the ITP module for Misty Productions. The system offers a Trello-like experience for task tracking, project management, and team collaboration. It supports JWT authentication, role-based access control, OTP verification, and AI-based text summarization to help streamline the production process and enhance efficiency.
 
