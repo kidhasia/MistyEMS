@@ -1,29 +1,29 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+const nodemailer = require('nodemailer');
 
-dotenv.config();
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST, // SMTP host
+  port: process.env.EMAIL_PORT, // SMTP port (587 for TLS, 465 for SSL)
+  secure: false, // Use TLS
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-const sendEmail = async (to, subject, text) => {
+const sendEmail = async (subject, text) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: 'esandidesilva2003@gmail.com',
+    subject,
+    text
+  };
+
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Misty EMS" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      text,
-    });
-
-    console.log(`✅ Email sent to ${to}`);
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully');
   } catch (err) {
-    console.error('❌ Email failed:', err);
+    console.error('Error sending email:', err);
   }
 };
 
-export default sendEmail;
+module.exports = sendEmail;   

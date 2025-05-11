@@ -42,11 +42,12 @@ function EmployeeDashboard() {
     navigate("/employee/login");
   };
 
-  const filteredTasks = tasks.filter((task) =>
-    task.taskId?.toString().includes(search.toLowerCase()) ||
-    task.clientId?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    task.clientId?.email?.toLowerCase().includes(search.toLowerCase()) ||
-    task.description?.toLowerCase().includes(search.toLowerCase())
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.taskId?.toString().includes(search.toLowerCase()) ||
+      task.clientId?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      task.clientId?.email?.toLowerCase().includes(search.toLowerCase()) ||
+      task.description?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -116,17 +117,26 @@ function EmployeeDashboard() {
           {filteredTasks.map((task) => (
             <div key={task._id} style={styles.taskCard}>
               <h4 style={styles.taskId}>Task #{task.taskId}</h4>
-              <p><strong>Client:</strong> {task.clientId?.name} ({task.clientId?.email})</p>
-              <p><strong>Description:</strong> {task.description}</p>
+              <p>
+                <strong>Client:</strong> {task.clientId?.name} (
+                {task.clientId?.email})
+              </p>
+              <p>
+                <strong>Description:</strong> {task.description}
+              </p>
 
               {task.summary && (
                 <p>
-                  <strong>Summary:</strong><br />
+                  <strong>Summary:</strong>
+                  <br />
                   <span style={{ whiteSpace: "pre-wrap" }}>{task.summary}</span>
                 </p>
               )}
 
-              <p><strong>Deadline:</strong> {new Date(task.deadline).toLocaleDateString()}</p>
+              <p>
+                <strong>Deadline:</strong>{" "}
+                {new Date(task.deadline).toLocaleDateString()}
+              </p>
 
               {task.attachment && (
                 <p>
@@ -301,8 +311,11 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "20px",
-    width: "100%",
-    maxWidth: "800px",
+    width: "100%", // Take full width
+    maxHeight: "60vh", // Keep scrolling
+    overflowY: "auto", // Enable vertical scrolling
+    paddingRight: "10px", // Prevent content from touching scrollbar
+    scrollBehavior: "smooth", // Smooth scrolling
   },
   taskCard: {
     backgroundColor: "#fff",
@@ -310,6 +323,8 @@ const styles = {
     padding: "20px",
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     position: "relative",
+    width: "100%", // Ensure task cards take full width
+    boxSizing: "border-box", // Include padding in width calculation
   },
   taskId: {
     color: "#7c3aed",

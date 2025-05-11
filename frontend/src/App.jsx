@@ -19,7 +19,7 @@ import AssignTask from './pages/employee/AssignTask.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import TaskPage from './pages/TaskPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
-import OverviewPage from './pages/OverviewPage.jsx'; // Import OverviewPage
+import OverviewPage from './pages/OverviewPage.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import './App.css';
 
@@ -36,6 +36,7 @@ const App = () => {
         '/client/forgot-password',
         '/client/verify-code',
         '/client/reset-password',
+        '/employee/dashboard', // Added to exclude Navbar for Employee Dashboard
     ];
 
     // Show Navbar for all routes except noNavbarRoutes
@@ -61,8 +62,8 @@ const App = () => {
                             <Route path="/employee/login" element={<EmployeeLogin />} />
                             <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
                             <Route path="/employee/assign-task" element={<AssignTask />} />
-                            <Route path="/overview" element={<OverviewPage />} /> {/* Replace DashboardPage with OverviewPage */}
-                            <Route path="/dashboard" element={<DashboardPage />} /> {/* Replace DashboardPage with OverviewPage */}
+                            <Route path="/overview" element={<OverviewPage />} />
+                            <Route path="/dashboard" element={<DashboardPage />} />
                             <Route path="/tasks/:id" element={<TaskPage />} />
                             <Route path="/reports" element={<ReportsPage />} />
                             <Route path="*" element={<Navigate to="/client/login" />} />

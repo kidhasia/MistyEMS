@@ -2,7 +2,7 @@ import { Router } from 'express';
 import Client from '../models/client.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import sendEmail from '../utils/sendEmail.js';
+import { sendEmail } from '../utils/sendEmail.js';
 
 const router = Router();
 
